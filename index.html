@@ -1,393 +1,142 @@
-<!DOCTYPE html>
-<html lang="es">
+/***********************
+ 🧊 BOMBOS
+************************/
 
-<head>
+let bombo1 = [];
+let bombo2 = [];
+let bombo3 = [];
+let bombo4 = [];
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+let grupos = [];
+let tabla = {};
 
-<title>Quiniela NH 2026</title>
+/***********************
+ 🎰 SHUFFLE (SORTEO REAL)
+************************/
 
-<style>
-
-body{
-background:#111;
-color:white;
-font-family:Arial;
-margin:0;
-padding:20px;
+function shuffle(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
 }
 
-h1{
-text-align:center;
+/***********************
+ 🏆 GENERAR GRUPOS
+************************/
+
+function generarGrupos() {
+  shuffle(bombo1);
+  shuffle(bombo2);
+  shuffle(bombo3);
+  shuffle(bombo4);
+
+  grupos = [];
+
+  for (let i = 0; i < bombo1.length; i++) {
+    grupos.push({
+      nombre: `Grupo ${String.fromCharCode(65 + i)}`,
+      equipos: [
+        bombo1[i],
+        bombo2[i],
+        bombo3[i],
+        bombo4[i]
+      ]
+    });
+  }
+
+  renderGrupos();
 }
 
-button{
-width:100%;
-padding:15px;
-font-size:20px;
-border:none;
-border-radius:10px;
-background:#1b5e20;
-color:white;
-margin-top:20px;
+/***********************
+ 🖥️ MOSTRAR GRUPOS (UI)
+************************/
+
+function renderGrupos() {
+  console.clear();
+  console.log("===== GRUPOS =====");
+
+  grupos.forEach(g => {
+    console.log(`\n${g.nombre}`);
+    g.equipos.forEach(e => console.log("- " + e));
+  });
 }
 
-.card{
-background:#222;
-padding:15px;
-margin-top:15px;
-border-radius:12px;
+/***********************
+ ⚽ INICIALIZAR TABLA
+************************/
+
+function inicializarTabla() {
+  let todos = [...bombo1, ...bombo2, ...bombo3, ...bombo4];
+
+  todos.forEach(eq => {
+    tabla[eq] = {
+      puntos: 0,
+      jugados: 0,
+      ganados: 0,
+      empatados: 0,
+      perdidos: 0
+    };
+  });
 }
 
-.estado{
-text-align:center;
-font-size:20px;
-margin-top:20px;
+/***********************
+ 📊 RESULTADOS
+************************/
+
+function registrarResultado(equipoA, equipoB, golesA, golesB) {
+  tabla[equipoA].jugados++;
+  tabla[equipoB].jugados++;
+
+  if (golesA > golesB) {
+    tabla[equipoA].ganados++;
+    tabla[equipoA].puntos += 3;
+    tabla[equipoB].perdidos++;
+  } 
+  else if (golesB > golesA) {
+    tabla[equipoB].ganados++;
+    tabla[equipoB].puntos += 3;
+    tabla[equipoA].perdidos++;
+  } 
+  else {
+    tabla[equipoA].empatados++;
+    tabla[equipoB].empatados++;
+    tabla[equipoA].puntos += 1;
+    tabla[equipoB].puntos += 1;
+  }
 }
 
-</style>
+/***********************
+ 🧾 MOSTRAR TABLA
+************************/
 
-</head>
+function mostrarTabla() {
+  let ranking = Object.entries(tabla)
+    .sort((a, b) => b[1].puntos - a[1].puntos);
 
-<body>
+  console.clear();
+  console.log("===== TABLA =====");
 
-<h1>🏆 Quiniela NH 2026</h1>
-
-<div class="estado">
-
-Bombo actual:
-
-<h2 id="bomboActual">
-1
-</h2>
-
-</div>
-
-<button onclick="sortear()">
-
-🎲 Sortear siguiente bombo
-
-</button>
-
-<div id="resultados">
-
-</div>
-
-<script>
-
-const participantes=[
-"Homero",
-"Max B",
-"Max R",
-"Wero",
-"Horse",
-"Garra",
-"Malu",
-"Rulo"
-];
-
-const equipos=[
-
-[],
-
-[
-"Argentina 🇦🇷",
-"Francia 🇫🇷",
-"España 🇪🇸",
-"Brasil 🇧🇷",
-"Inglaterra 🏴",
-"Portugal 🇵🇹",
-"Alemania 🇩🇪",
-"Países Bajos 🇳🇱"
-],
-
-[
-"Croacia 🇭🇷",
-"Uruguay 🇺🇾",
-"Colombia 🇨🇴",
-"Marruecos 🇲🇦",
-"Bélgica 🇧🇪",
-"Japón 🇯🇵",
-"Ecuador 🇪🇨",
-"Suiza 🇨🇭"
-],
-
-[
-"México 🇲🇽",
-"Canadá 🇨🇦",
-"Estados Unidos 🇺🇸",
-"Suecia 🇸🇪",
-"Turquía 🇹🇷",
-"Austria 🇦🇹",
-"Noruega 🇳🇴",
-"Senegal 🇸🇳"
-],
-
-[
-"Paraguay 🇵🇾",
-"República Checa 🇨🇿",
-"Australia 🇦🇺",
-"Egipto 🇪🇬",
-"Costa de Marfil 🇨🇮",
-"Corea del Sur 🇰🇷",
-"Irán 🇮🇷",
-"Túnez 🇹🇳"
-],
-
-[
-"Argelia 🇩🇿",
-"Ghana 🇬🇭",
-"Sudáfrica 🇿🇦",
-"Bosnia y Herzegovina 🇧🇦",
-"Arabia Saudita 🇸🇦",
-"Catar 🇶🇦",
-"Irak 🇮🇶",
-"Panamá 🇵🇦"
-],
-
-[
-"Nueva Zelanda 🇳🇿",
-"Jordania 🇯🇴",
-"Uzbekistán 🇺🇿",
-"Haití 🇭🇹",
-"Curazao 🇨🇼",
-"R.D. del Congo 🇨🇩",
-"Cabo Verde 🇨🇻",
-"Escocia 🏴"
-]
-
-];
-
-let bombo=1;
-
-let tarjetas={};
-let puntosEquipo={};
-
-let historial=[];
-
-participantes.forEach(p=>{
-
-tarjetas[p]=[];
-
-});
-participantes.forEach(p=>{
-
-tarjetas[p]=[];
-
-});
-
-function mezclar(arreglo){
-
-return arreglo.sort(()=>Math.random()-0.5);
-
+  ranking.forEach(([eq, d]) => {
+    console.log(`${eq} | ${d.puntos} pts | PJ:${d.jugados} G:${d.ganados} E:${d.empatados} P:${d.perdidos}`);
+  });
 }
 
-function mostrar(){
+/***********************
+ 🔥 COMPATIBILIDAD CON TU HTML VIEJO
+ (ESTO ARREGLA TU GITHUB PAGES)
+************************/
 
-let html="";
-
-let tabla=[];
-
-participantes.forEach(p=>{
-
-let total=0;
-
-tarjetas[p].forEach(e=>{
-
-let nombre=e.split(" ")[0];
-
-if(puntosEquipo[nombre]){
-
-total+=puntosEquipo[nombre];
-
+function mostrar() {
+  renderGrupos();
 }
 
-});
-
-tabla.push({
-
-nombre:p,
-
-puntos:total
-
-});
-
-});
-
-tabla.sort(
-
-(a,b)=>b.puntos-a.puntos
-
-);
-
-html+="<h2>📊 Tabla General</h2>";
-
-tabla.forEach(
-
-(t,i)=>{
-
-html+="<p>"+
-
-(i+1)+
-
-". "+
-
-t.nombre+
-
-" - "+
-
-t.puntos+
-
-" pts</p>";
-
+function sortear() {
+  generarGrupos();
 }
 
-);
-
-html+="<hr>";
-
-participantes.forEach(p=>{
-
-html+="<div class='card'>";
-
-html+="<h2>🏆 "+p+"</h2>";
-
-let total=0;
-
-tarjetas[p].forEach(e=>{
-
-let nombre=e.split(" ")[0];
-
-let pts=0;
-
-if(puntosEquipo[nombre]){
-
-pts=puntosEquipo[nombre];
-
+function iniciar() {
+  inicializarTabla();
+  generarGrupos();
+  mostrarTabla();
 }
-
-total+=pts;
-
-html+="<p>"+
-
-e+
-
-" ("+
-
-pts+
-
-")</p>";
-
-});
-
-html+="<b>TOTAL: "+
-
-total+
-
-" pts</b>";
-
-html+="</div>";
-
-});
-
-document.getElementById(
-"resultados"
-).innerHTML=html;
-
-}
-
-let html="";
-
-participantes.forEach(p=>{
-
-html+="<div class='card'>";
-
-html+="<h2>🏆 "+p+"</h2>";
-
-tarjetas[p].forEach(e=>{
-
-html+="<p>"+e+"</p>";
-
-});
-
-html+="</div>";
-
-});
-
-document.getElementById(
-"resultados"
-).innerHTML=html;
-
-}
-
-function sortear(){
-
-if(bombo>6){
-
-alert(
-"🏆 El sorteo ya terminó."
-);
-
-return;
-
-}
-
-let lista=
-mezclar([...equipos[bombo]]);
-
-let i=0;
-
-function siguiente(){
-
-if(i<8){
-
-tarjetas[
-participantes[i]
-].push(
-lista[i]
-);
-
-mostrar();
-
-i++;
-
-setTimeout(
-siguiente,
-1000
-);
-
-}else{
-
-bombo++;
-
-if(bombo<=6){
-
-document.getElementById(
-"bomboActual"
-).innerHTML=bombo;
-
-}else{
-
-document.getElementById(
-"bomboActual"
-).innerHTML=
-"FINALIZADO 🏆";
-
-}
-
-}
-
-}
-
-siguiente();
-
-}
-
-mostrar();
-
-</script>
-
-</body>
-
-</html>
