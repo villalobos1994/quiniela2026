@@ -106,7 +106,65 @@ margin-bottom:8px;
 </div>
 
 </div>
+<hr>
 
+<h2>🎲 Sorteo Oficial</h2>
+
+<button onclick="sortearBombo1()">
+Sortear Bombo 1
+</button>
+
+<div id="resultadoBombo1">
+
+</div>
+
+<script>
+
+function sortearBombo1(){
+
+const participantes = [
+"Homero",
+"Max B",
+"Max R",
+"Wero",
+"Horse",
+"Garra",
+"Malu",
+"Rulo"
+];
+
+const bombo1 = [
+"Argentina 🇦🇷",
+"Francia 🇫🇷",
+"España 🇪🇸",
+"Brasil 🇧🇷",
+"Inglaterra 🏴",
+"Portugal 🇵🇹",
+"Alemania 🇩🇪",
+"Países Bajos 🇳🇱"
+];
+
+bombo1.sort(() => Math.random() - 0.5);
+
+let texto = "";
+
+for(let i=0;i<8;i++){
+
+texto += "<p><b>" +
+participantes[i] +
+"</b> → " +
+bombo1[i] +
+"</p>";
+
+}
+
+document.getElementById(
+"resultadoBombo1"
+).innerHTML = texto;
+
+}
+
+</script>
 </body>
 
 </html>
