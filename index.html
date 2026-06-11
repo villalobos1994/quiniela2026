@@ -2,48 +2,48 @@
 <html lang="es">
 
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Quiniela NH 2026</title>
 
 <style>
 
 body{
-font-family: Arial, sans-serif;
 background:#111;
 color:white;
+font-family:Arial;
 margin:0;
-padding:0;
-}
-
-header{
-background:#1b5e20;
-padding:30px;
-text-align:center;
+padding:20px;
 }
 
 h1{
-margin:0;
-font-size:32px;
+text-align:center;
 }
 
-.container{
-padding:20px;
+button{
+width:100%;
+padding:15px;
+font-size:20px;
+border:none;
+border-radius:10px;
+background:#1b5e20;
+color:white;
+margin-top:20px;
 }
 
 .card{
 background:#222;
-padding:20px;
-margin-bottom:20px;
-border-radius:15px;
+padding:15px;
+margin-top:15px;
+border-radius:12px;
 }
 
-h2{
-color:#7CFC00;
-}
-
-li{
-margin-bottom:8px;
+.estado{
+text-align:center;
+font-size:20px;
+margin-top:20px;
 }
 
 </style>
@@ -52,77 +52,31 @@ margin-bottom:8px;
 
 <body>
 
-<header>
-
 <h1>🏆 Quiniela NH 2026</h1>
 
-<p>Mundial FIFA 2026</p>
+<div class="estado">
 
-</header>
+Bombo actual:
 
-<div class="container">
-
-<div class="card">
-
-<h2>💰 Premios</h2>
-
-<ul>
-<li>🥇 Primer Lugar: $2,500</li>
-<li>🥈 Segundo Lugar: $1,000</li>
-<li>🥉 Tercer Lugar: $500</li>
-</ul>
+<h2 id="bomboActual">
+1
+</h2>
 
 </div>
 
-<div class="card">
+<button onclick="sortear()">
 
-<h2>👥 Participantes</h2>
+🎲 Sortear siguiente bombo
 
-<ol>
-<li>Homero</li>
-<li>Max B</li>
-<li>Max R</li>
-<li>Wero</li>
-<li>Horse</li>
-<li>Garra</li>
-<li>Malu</li>
-<li>Rulo</li>
-</ol>
-
-</div>
-
-<div class="card">
-
-<h2>⚽ Próximamente</h2>
-
-<p>🎲 Sorteo de Bombos</p>
-
-<p>📊 Tabla General</p>
-
-<p>🏆 Equipos de cada participante</p>
-
-<p>📜 Reglamento</p>
-
-</div>
-
-</div>
-<hr>
-
-<h2>🎲 Sorteo Oficial</h2>
-
-<button onclick="sortearBombo1()">
-Sortear Bombo 1
 </button>
 
-<div id="resultadoBombo1">
+<div id="resultados">
 
 </div>
 
 <script>
 
-function sortearBombo1(){
-
-const participantes = [
+const participantes=[
 "Homero",
 "Max B",
 "Max R",
@@ -133,7 +87,11 @@ const participantes = [
 "Rulo"
 ];
 
-const bombo1 = [
+const equipos=[
+
+[],
+
+[
 "Argentina 🇦🇷",
 "Francia 🇫🇷",
 "España 🇪🇸",
@@ -142,29 +100,174 @@ const bombo1 = [
 "Portugal 🇵🇹",
 "Alemania 🇩🇪",
 "Países Bajos 🇳🇱"
+],
+
+[
+"Croacia 🇭🇷",
+"Uruguay 🇺🇾",
+"Colombia 🇨🇴",
+"Marruecos 🇲🇦",
+"Bélgica 🇧🇪",
+"Japón 🇯🇵",
+"Ecuador 🇪🇨",
+"Suiza 🇨🇭"
+],
+
+[
+"México 🇲🇽",
+"Canadá 🇨🇦",
+"Estados Unidos 🇺🇸",
+"Suecia 🇸🇪",
+"Turquía 🇹🇷",
+"Austria 🇦🇹",
+"Noruega 🇳🇴",
+"Senegal 🇸🇳"
+],
+
+[
+"Paraguay 🇵🇾",
+"República Checa 🇨🇿",
+"Australia 🇦🇺",
+"Egipto 🇪🇬",
+"Costa de Marfil 🇨🇮",
+"Corea del Sur 🇰🇷",
+"Irán 🇮🇷",
+"Túnez 🇹🇳"
+],
+
+[
+"Argelia 🇩🇿",
+"Ghana 🇬🇭",
+"Sudáfrica 🇿🇦",
+"Bosnia y Herzegovina 🇧🇦",
+"Arabia Saudita 🇸🇦",
+"Catar 🇶🇦",
+"Irak 🇮🇶",
+"Panamá 🇵🇦"
+],
+
+[
+"Nueva Zelanda 🇳🇿",
+"Jordania 🇯🇴",
+"Uzbekistán 🇺🇿",
+"Haití 🇭🇹",
+"Curazao 🇨🇼",
+"R.D. del Congo 🇨🇩",
+"Cabo Verde 🇨🇻",
+"Escocia 🏴"
+]
+
 ];
 
-bombo1.sort(() => Math.random() - 0.5);
+let bombo=1;
 
-let texto = "";
+let tarjetas={};
 
-for(let i=0;i<8;i++){
+participantes.forEach(p=>{
 
-texto += "<p><b>" +
-participantes[i] +
-"</b> → " +
-bombo1[i] +
-"</p>";
+tarjetas[p]=[];
+
+});
+
+function mezclar(arreglo){
+
+return arreglo.sort(()=>Math.random()-0.5);
 
 }
+
+function mostrar(){
+
+let html="";
+
+participantes.forEach(p=>{
+
+html+="<div class='card'>";
+
+html+="<h2>🏆 "+p+"</h2>";
+
+tarjetas[p].forEach(e=>{
+
+html+="<p>"+e+"</p>";
+
+});
+
+html+="</div>";
+
+});
 
 document.getElementById(
-"resultadoBombo1"
-).innerHTML = texto;
+"resultados"
+).innerHTML=html;
 
 }
 
+function sortear(){
+
+if(bombo>6){
+
+alert(
+"🏆 El sorteo ya terminó."
+);
+
+return;
+
+}
+
+let lista=
+mezclar([...equipos[bombo]]);
+
+let i=0;
+
+function siguiente(){
+
+if(i<8){
+
+tarjetas[
+participantes[i]
+].push(
+lista[i]
+);
+
+mostrar();
+
+i++;
+
+setTimeout(
+siguiente,
+1000
+);
+
+}else{
+
+bombo++;
+
+if(bombo<=6){
+
+document.getElementById(
+"bomboActual"
+).innerHTML=bombo;
+
+}else{
+
+document.getElementById(
+"bomboActual"
+).innerHTML=
+"FINALIZADO 🏆";
+
+}
+
+}
+
+}
+
+siguiente();
+
+}
+
+mostrar();
+
 </script>
+
 </body>
 
 </html>
