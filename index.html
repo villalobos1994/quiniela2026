@@ -162,7 +162,15 @@ const equipos=[
 let bombo=1;
 
 let tarjetas={};
+let puntosEquipo={};
 
+let historial=[];
+
+participantes.forEach(p=>{
+
+tarjetas[p]=[];
+
+});
 participantes.forEach(p=>{
 
 tarjetas[p]=[];
@@ -176,6 +184,118 @@ return arreglo.sort(()=>Math.random()-0.5);
 }
 
 function mostrar(){
+
+let html="";
+
+let tabla=[];
+
+participantes.forEach(p=>{
+
+let total=0;
+
+tarjetas[p].forEach(e=>{
+
+let nombre=e.split(" ")[0];
+
+if(puntosEquipo[nombre]){
+
+total+=puntosEquipo[nombre];
+
+}
+
+});
+
+tabla.push({
+
+nombre:p,
+
+puntos:total
+
+});
+
+});
+
+tabla.sort(
+
+(a,b)=>b.puntos-a.puntos
+
+);
+
+html+="<h2>📊 Tabla General</h2>";
+
+tabla.forEach(
+
+(t,i)=>{
+
+html+="<p>"+
+
+(i+1)+
+
+". "+
+
+t.nombre+
+
+" - "+
+
+t.puntos+
+
+" pts</p>";
+
+}
+
+);
+
+html+="<hr>";
+
+participantes.forEach(p=>{
+
+html+="<div class='card'>";
+
+html+="<h2>🏆 "+p+"</h2>";
+
+let total=0;
+
+tarjetas[p].forEach(e=>{
+
+let nombre=e.split(" ")[0];
+
+let pts=0;
+
+if(puntosEquipo[nombre]){
+
+pts=puntosEquipo[nombre];
+
+}
+
+total+=pts;
+
+html+="<p>"+
+
+e+
+
+" ("+
+
+pts+
+
+")</p>";
+
+});
+
+html+="<b>TOTAL: "+
+
+total+
+
+" pts</b>";
+
+html+="</div>";
+
+});
+
+document.getElementById(
+"resultados"
+).innerHTML=html;
+
+}
 
 let html="";
 
